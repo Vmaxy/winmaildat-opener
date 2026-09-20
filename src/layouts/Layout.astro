@@ -15,7 +15,7 @@ const {
 const canonical = new URL(path, 'https://winmaildatopener.com').toString();
 ---
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -28,10 +28,42 @@ const canonical = new URL(path, 'https://winmaildatopener.com').toString();
 		<meta property="og:url" content={canonical} />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
-		<meta name="theme-color" content="#fafafa" />
+		<meta name="theme-color" id="theme-color" content="#fafafa" />
+		<script is:inline>
+			(() => {
+				const stored = localStorage.getItem('theme');
+				const theme = stored === 'dark' || stored === 'light'
+					? stored
+					: (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+				document.documentElement.dataset.theme = theme;
+				document.documentElement.style.colorScheme = theme;
+			})();
+		</script>
 		<title>{title}</title>
 	</head>
 	<body>
 		<slot />
+		<script is:inline>
+			(() => {
+				const toggle = document.querySelector('#theme-toggle');
+				const label = document.querySelector('#theme-label');
+				const themeColor = document.querySelector('#theme-color');
+				const applyTheme = (theme) => {
+					const isDark = theme === 'dark';
+					document.documentElement.dataset.theme = theme;
+					document.documentElement.style.colorScheme = theme;
+					localStorage.setItem('theme', theme);
+					toggle?.setAttribute('aria-pressed', String(isDark));
+					toggle?.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+					if (label) label.textContent = isDark ? 'Light mode' : 'Dark mode';
+					if (themeColor) themeColor.content = isDark ? '#101418' : '#fafafa';
+				};
+				const initialTheme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+				applyTheme(initialTheme);
+				toggle?.addEventListener('click', () => {
+					applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
+				});
+			})();
+		</script>
 	</body>
 </html>

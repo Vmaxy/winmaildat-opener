@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
 ---
 
 <Layout>
@@ -12,13 +13,14 @@ import Layout from '../layouts/Layout.astro';
 			<nav class="nav-links" aria-label="Main navigation">
 				<a href="#how-it-works">How it works</a>
 				<a href="#faq">FAQ</a>
+				<ThemeToggle />
 				<a class="nav-cta" href="#opener">Open a file</a>
 			</nav>
 		</div>
 	</header>
 
 	<main>
-		<section class="hero container" aria-labelledby="hero-title">
+		<section class="hero hero-wide container" aria-labelledby="hero-title">
 			<div class="hero-copy">
 				<p class="eyebrow">A private file utility</p>
 				<h1 id="hero-title">Find the files hiding inside <span>winmail.dat</span>.</h1>

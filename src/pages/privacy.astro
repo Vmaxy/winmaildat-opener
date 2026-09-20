@@ -1,9 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
 ---
 
 <Layout title="Privacy — Winmail.dat Opener" description="How Winmail.dat Opener handles files, browser data, and privacy.">
-	<header class="site-header"><div class="container nav-inner"><a class="wordmark" href="/" aria-label="Winmail.dat Opener home"><span class="wordmark-mark" aria-hidden="true">↗</span><span>winmail.dat opener</span></a><nav class="nav-links" aria-label="Main navigation"><a href="/how-it-works">How it works</a><a class="nav-cta" href="/">Open a file</a></nav></div></header>
+	<header class="site-header"><div class="container nav-inner"><a class="wordmark" href="/" aria-label="Winmail.dat Opener home"><span class="wordmark-mark" aria-hidden="true">↗</span><span>winmail.dat opener</span></a><nav class="nav-links" aria-label="Main navigation"><a href="/how-it-works">How it works</a><ThemeToggle /><a class="nav-cta" href="/">Open a file</a></nav></div></header>
 	<main class="content-section container legal-page">
 		<div class="section-heading"><p class="eyebrow">Privacy</p><h1>Your file stays with you.</h1><p class="hero-lede">This page explains what happens when you use the decoder and what this site does not need to collect.</p></div>
 		<div class="legal-copy">

@@ -1,9 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
 ---
 
 <Layout title="FAQ — Winmail.dat Opener" description="Answers about opening winmail.dat files, privacy, limits, and recovered attachments.">
-	<header class="site-header"><div class="container nav-inner"><a class="wordmark" href="/" aria-label="Winmail.dat Opener home"><span class="wordmark-mark" aria-hidden="true">↗</span><span>winmail.dat opener</span></a><nav class="nav-links" aria-label="Main navigation"><a href="/how-it-works">How it works</a><a class="nav-cta" href="/">Open a file</a></nav></div></header>
+	<header class="site-header"><div class="container nav-inner"><a class="wordmark" href="/" aria-label="Winmail.dat Opener home"><span class="wordmark-mark" aria-hidden="true">↗</span><span>winmail.dat opener</span></a><nav class="nav-links" aria-label="Main navigation"><a href="/how-it-works">How it works</a><ThemeToggle /><a class="nav-cta" href="/">Open a file</a></nav></div></header>
 	<main class="content-section container">
 		<div class="section-heading"><p class="eyebrow">FAQ</p><h1>Answers before you start.</h1><p class="hero-lede">A few practical notes about Outlook’s winmail.dat files and this browser-based decoder.</p></div>
 		<div class="faq-list faq-page-list">
