@@ -14,6 +14,8 @@ interface Props {
 		mainNav: string;
 		localeMenu: string;
 		selectLanguage: string;
+		menuButton: string;
+		mobileMenu: string;
 	};
 }
 
@@ -24,13 +26,21 @@ const faqPath = locale === 'en' && page === 'home' ? '#faq' : `${localizedPath(l
 const howHref = locale === 'en' && page === 'home' ? '#how-it-works' : howPath;
 const openHref = locale === 'en' && page === 'home' ? '#opener' : `${homePath}#opener`;
 ---
-<header class="site-header">
+<header class="site-header" data-menu-open="false">
 	<div class="container nav-inner">
 		<a class="wordmark" href={homePath} aria-label={shared.homeAria}>
 			<span class="wordmark-mark" aria-hidden="true">↗</span>
 			<span>winmail.dat opener</span>
 		</a>
-		<nav class="nav-links" aria-label={shared.mainNav}>
+		<button class="mobile-menu-toggle" type="button" id="mobile-menu-toggle" aria-expanded="false" aria-controls="mobile-menu" aria-label={shared.menuButton}>
+			<svg class="menu-icon menu-icon-open" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+				<path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+			</svg>
+			<svg class="menu-icon menu-icon-close" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+				<path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+			</svg>
+		</button>
+		<nav class="nav-links" id="mobile-menu" aria-label={shared.mobileMenu}>
 			<a href={howHref}>{navHow}</a>
 			<a href={faqPath}>{navFaq}</a>
 			<LanguageSwitcher locale={locale} page={page} ariaLabel={shared.selectLanguage} menuLabel={shared.localeMenu} />
@@ -39,3 +49,65 @@ const openHref = locale === 'en' && page === 'home' ? '#opener' : `${homePath}#o
 		</nav>
 	</div>
 </header>
+<script is:inline>
+	(() => {
+		const header = document.querySelector('.site-header');
+		const toggle = document.querySelector('#mobile-menu-toggle');
+		const menu = document.querySelector('#mobile-menu');
+		if (!header || !toggle || !menu) return;
+
+		const mobileQuery = window.matchMedia('(max-width: 760px)');
+		const languageMenu = menu.querySelector('.mobile-language-menu');
+		const languageToggle = languageMenu?.querySelector('.mobile-language-toggle');
+		const closeLanguageMenu = () => {
+			languageMenu?.removeAttribute('data-open');
+			languageToggle?.setAttribute('aria-expanded', 'false');
+		};
+		languageToggle?.addEventListener('click', (event) => {
+			event.stopPropagation();
+			const isOpen = languageMenu?.getAttribute('data-open') === 'true';
+			if (isOpen) closeLanguageMenu();
+			else {
+				languageMenu?.setAttribute('data-open', 'true');
+				languageToggle.setAttribute('aria-expanded', 'true');
+			}
+		});
+		languageMenu?.addEventListener('click', (event) => event.stopPropagation());
+
+		const closeMenu = (restoreFocus = false) => {
+			header.removeAttribute('data-menu-open');
+			toggle.setAttribute('aria-expanded', 'false');
+			closeLanguageMenu();
+			if (restoreFocus && mobileQuery.matches) toggle.focus();
+		};
+
+		toggle.addEventListener('click', () => {
+			const isOpen = header.getAttribute('data-menu-open') === 'true';
+			if (isOpen) {
+				closeMenu();
+			} else {
+				header.setAttribute('data-menu-open', 'true');
+				toggle.setAttribute('aria-expanded', 'true');
+			}
+		});
+
+		menu.addEventListener('click', (event) => {
+			const target = event.target;
+			if (target instanceof Element && target.closest('a')) closeMenu();
+		});
+
+		document.addEventListener('click', (event) => {
+			const target = event.target;
+			if (target instanceof Node && !header.contains(target)) closeMenu();
+		});
+
+		document.addEventListener('keydown', (event) => {
+			if (event.key === 'Escape' && header.getAttribute('data-menu-open') === 'true') closeMenu(true);
+		});
+
+		const handleViewportChange = (event) => {
+			if (!event.matches) closeMenu();
+		};
+		mobileQuery.addEventListener?.('change', handleViewportChange);
+	})();
+</script>

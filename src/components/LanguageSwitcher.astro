@@ -17,6 +17,7 @@ const { locale, page, ariaLabel, menuLabel } = Astro.props;
 			<path d="M3.5 12h17M12 3.25c2.15 2.35 3.35 5.28 3.35 8.75S14.15 18.4 12 20.75C9.85 18.4 8.65 15.47 8.65 12S9.85 5.6 12 3.25Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
 		</svg>
 	</span>
+	<span class="language-label">{menuLabel}</span>
 	<label class="sr-only" for="language-select">{ariaLabel}</label>
 	<select
 		class="language-select"
@@ -30,4 +31,17 @@ const { locale, page, ariaLabel, menuLabel } = Astro.props;
 			<option value={option} data-url={localizedPath(option, page)} selected={option === locale}>{localeNames[option]}</option>
 		))}
 	</select>
+	<div class="mobile-language-menu">
+		<button class="mobile-language-toggle" type="button" aria-expanded="false" aria-haspopup="listbox">
+			<span>{localeNames[locale]}</span>
+			<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+				<path d="m7 9 5 5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+			</svg>
+		</button>
+		<div class="mobile-language-options" role="listbox" aria-label={ariaLabel}>
+			{locales.map((option) => (
+				<a role="option" aria-selected={option === locale ? 'true' : 'false'} href={localizedPath(option, page)}>{localeNames[option]}</a>
+			))}
+		</div>
+	</div>
 </div>
