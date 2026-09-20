@@ -50,13 +50,13 @@ import ThemeToggle from '../components/ThemeToggle.astro';
 				</div>
 
 				<div class="dropzone" id="dropzone" tabindex="0" role="button" aria-controls="file-input" aria-describedby="dropzone-help">
-					<input id="file-input" type="file" accept=".dat,application/octet-stream" hidden />
+					<input id="file-input" type="file" accept=".dat,application/octet-stream,application/x-tnef" hidden />
 					<div class="upload-icon" aria-hidden="true">
 						<svg viewBox="0 0 24 24" fill="none"><path d="M12 15V4m0 0L8 8m4-4 4 4M5 14v4.25A1.75 1.75 0 0 0 6.75 20h10.5A1.75 1.75 0 0 0 19 18.25V14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
 					</div>
 					<h3>Drop your winmail.dat or ATT0001.dat here</h3>
 					<p id="dropzone-help">or <button type="button" class="inline-action" id="browse-button">browse your files</button></p>
-					<span class="file-hint">DAT files up to 50 MB</span>
+					<span class="file-hint">DAT files up to 150 MB</span>
 				</div>
 
 				<div class="tool-status" id="tool-status" aria-live="polite" aria-atomic="true">
@@ -124,7 +124,7 @@ import ThemeToggle from '../components/ThemeToggle.astro';
 				<div class="faq-list">
 					<details><summary>What is a winmail.dat file?</summary><p>Outlook can package rich-text email formatting and attachments in a TNEF container called winmail.dat. Other mail apps may show the container instead of the files inside it.</p></details>
 					<details><summary>Does this upload my file?</summary><p>No. The decoder reads the file with browser APIs on your device. The file contents are not sent to our server or a third-party service.</p></details>
-					<details><summary>What if I get an error?</summary><p>Make sure you selected the original .dat attachment and that it is smaller than 50 MB. Some files are incomplete or do not contain recoverable attachments.</p></details>
+					<details><summary>What if I get an error?</summary><p>Make sure you selected the original .dat attachment and that it is smaller than 150 MB. Some files are incomplete or do not contain recoverable attachments.</p></details>
 					<details><summary>Can I use this on my phone?</summary><p>Yes. Use the file picker from your mail or files app. The layout and download controls are designed for touch screens.</p></details>
 				</div>
 			</div>
@@ -143,7 +143,8 @@ import ThemeToggle from '../components/ThemeToggle.astro';
 	import { zipSync } from 'fflate';
 	import { parseTnef } from 'omnimail';
 
-	const MAX_FILE_SIZE = 50 * 1024 * 1024;
+	const MAX_FILE_SIZE = 150 * 1024 * 1024;
+	const isSupportedFile = (file: File) => file.name.toLowerCase().endsWith('.dat') || file.type === 'application/x-tnef';
 	const dropzone = document.querySelector<HTMLDivElement>('#dropzone');
 	const input = document.querySelector<HTMLInputElement>('#file-input');
 	const browseButton = document.querySelector<HTMLButtonElement>('#browse-button');
@@ -213,12 +214,12 @@ import ThemeToggle from '../components/ThemeToggle.astro';
 		resetButton!.disabled = true;
 		errorPanel!.hidden = true;
 		resultPanel!.hidden = true;
-		if (!file.name.toLowerCase().endsWith('.dat')) {
-			showError('That does not look like a DAT file.', 'Choose the winmail.dat attachment from your email, then try again.');
+		if (!isSupportedFile(file)) {
+			showError('That does not look like a TNEF file.', 'Choose a winmail.dat or ATT0001.dat attachment from your email, then try again.');
 			return;
 		}
 		if (file.size > MAX_FILE_SIZE) {
-			showError('That file is larger than 50 MB.', 'For privacy and performance, this browser tool accepts files up to 50 MB.');
+			showError('That file is larger than 150 MB.', 'For privacy and performance, this browser tool accepts files up to 150 MB.');
 			return;
 		}
 		try {
