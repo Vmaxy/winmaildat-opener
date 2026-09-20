@@ -61,13 +61,13 @@ a { color: inherit; }
 .container { width: min(1120px, calc(100% - 48px)); margin-inline: auto; }
 .site-header { border-bottom: 1px solid var(--hairline); background: var(--header-bg); backdrop-filter: blur(12px); }
 .nav-inner, .footer-inner { min-height: 68px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
-.wordmark { display: inline-flex; align-items: center; gap: 9px; text-decoration: none; font-size: 15px; font-weight: 600; letter-spacing: -.2px; }
+.wordmark { display: inline-flex; align-items: center; gap: 9px; text-decoration: none; font-size: 18px; font-weight: 600; letter-spacing: -.35px; }
 .wordmark-mark { display: grid; place-items: center; width: 23px; height: 23px; color: var(--contrast-text); background: var(--contrast-surface); border-radius: 6px; font-size: 17px; transform: rotate(-8deg); }
 .nav-links { display: flex; align-items: center; gap: 8px; color: var(--body); font-size: 14px; }
 .nav-links a { padding: 10px 12px; text-decoration: none; border-radius: 999px; }
 .nav-links a:hover { color: var(--ink); background: var(--surface); }
 .nav-links .nav-cta { color: var(--contrast-text); background: var(--contrast-surface); border-radius: 6px; padding-inline: 14px; }
-.theme-toggle { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--toggle-border); background: var(--toggle-bg); color: var(--toggle-text); border-radius: 999px; padding: 8px 12px; cursor: pointer; font-weight: 600; }
+.theme-toggle { display: inline-grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--toggle-border); background: var(--toggle-bg); color: var(--toggle-text); border-radius: 999px; padding: 0; cursor: pointer; }
 .theme-toggle:hover { border-color: var(--link); }
 .theme-toggle .theme-icon { display: none; place-items: center; width: 18px; height: 18px; }
 html[data-theme="light"] .theme-icon-moon, html[data-theme="dark"] .theme-icon-sun { display: inline-grid; }
@@ -119,7 +119,7 @@ html[data-theme="dark"] .partial-notice { background: rgba(255,224,140,.12); bor
 .legal-page { max-width: 880px; } .legal-copy { max-width: 700px; } .legal-copy h2 { margin: 42px 0 10px; font-size: 21px; letter-spacing: -.5px; } .legal-copy p { margin-bottom: 0; color: var(--body); line-height: 1.7; } .legal-copy a,.contact-card a,.footer-inner a { color: var(--link); } .contact-card { margin-top: 0; } .contact-card h2 { margin-bottom: 16px; }
 .site-footer { border-top: 1px solid var(--hairline); } .footer-inner { min-height: 100px; } .footer-inner p { margin: 0; color: var(--mute); font-size: 12px; } [hidden] { display: none !important; }
 @media (max-width:760px) {
-	.container { width: min(100% - 32px, 620px); } .nav-inner { min-height: 60px; display: grid; grid-template-columns: 1fr; justify-items: stretch; gap: 10px; padding-block: 12px; } .nav-links { display: flex; justify-content: flex-end; gap: 5px; min-width: 0; } .nav-links a:not(.nav-cta) { display: none; } .theme-toggle { padding: 7px 9px; }
+	.container { width: min(100% - 32px, 620px); } .nav-inner { min-height: 60px; display: grid; grid-template-columns: 1fr; justify-items: stretch; gap: 10px; padding-block: 12px; } .nav-links { display: flex; justify-content: flex-end; gap: 5px; min-width: 0; } .nav-links a:not(.nav-cta) { display: none; }
 	.hero-wide { width: min(100% - 32px, 620px); }
 	.hero { min-height: 0; padding-block: 64px 44px; display: block; } .hero::before { right: -220px; top: 140px; opacity: .45; } h1 { max-width: 580px; font-size: clamp(42px,12vw,60px); letter-spacing: -2.8px; } .hero-lede { font-size: 16px; } .hero-orbit { min-height: 170px; margin-top: 20px; transform: scale(.8); }
 	.tool-section { margin-bottom: 80px; } .tool-card { padding: 18px; } .tool-card-header,.result-header { align-items: flex-start; flex-direction: column; } .dropzone { min-height: 225px; padding: 20px; } .result-header .button { width: 100%; } .error-panel { align-items: flex-start; flex-wrap: wrap; } .error-panel .text-button { width: 100%; margin-left: 42px; text-align: left; }
