@@ -1,0 +1,33 @@
+---
+import { localizedPath, localeLabels, localeNames, locales, type Locale, type PageKey } from '../i18n';
+
+interface Props {
+	locale: Locale;
+	page: PageKey;
+	ariaLabel: string;
+	menuLabel: string;
+}
+
+const { locale, page, ariaLabel, menuLabel } = Astro.props;
+---
+<div class="language-switcher">
+	<span class="language-toggle" aria-hidden="true" title={menuLabel}>
+		<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+			<circle cx="12" cy="12" r="8.75" stroke="currentColor" stroke-width="1.5" />
+			<path d="M3.5 12h17M12 3.25c2.15 2.35 3.35 5.28 3.35 8.75S14.15 18.4 12 20.75C9.85 18.4 8.65 15.47 8.65 12S9.85 5.6 12 3.25Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+		</svg>
+	</span>
+	<label class="sr-only" for="language-select">{ariaLabel}</label>
+	<select
+		class="language-select"
+		id="language-select"
+		aria-label={ariaLabel}
+		title={menuLabel}
+		value={locale}
+		onchange="try { localStorage.setItem('locale', this.value); } catch (_) {} window.location.assign(this.options[this.selectedIndex].dataset.url);"
+	>
+		{locales.map((option) => (
+			<option value={option} data-url={localizedPath(option, page)} selected={option === locale}>{localeNames[option]}</option>
+		))}
+	</select>
+</div>

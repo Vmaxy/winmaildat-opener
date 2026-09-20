@@ -1,0 +1,41 @@
+---
+import LanguageSwitcher from './LanguageSwitcher.astro';
+import ThemeToggle from './ThemeToggle.astro';
+import { localizedPath, type Locale, type PageKey } from '../i18n';
+
+interface Props {
+	locale: Locale;
+	page: PageKey;
+	navHow: string;
+	navFaq: string;
+	openFile: string;
+	shared: {
+		homeAria: string;
+		mainNav: string;
+		localeMenu: string;
+		selectLanguage: string;
+	};
+}
+
+const { locale, page, navHow, navFaq, openFile, shared } = Astro.props;
+const homePath = localizedPath(locale, 'home');
+const howPath = localizedPath(locale, 'how-it-works');
+const faqPath = locale === 'en' && page === 'home' ? '#faq' : `${localizedPath(locale, 'faq')}`;
+const howHref = locale === 'en' && page === 'home' ? '#how-it-works' : howPath;
+const openHref = locale === 'en' && page === 'home' ? '#opener' : `${homePath}#opener`;
+---
+<header class="site-header">
+	<div class="container nav-inner">
+		<a class="wordmark" href={homePath} aria-label={shared.homeAria}>
+			<span class="wordmark-mark" aria-hidden="true">↗</span>
+			<span>winmail.dat opener</span>
+		</a>
+		<nav class="nav-links" aria-label={shared.mainNav}>
+			<a href={howHref}>{navHow}</a>
+			<a href={faqPath}>{navFaq}</a>
+			<LanguageSwitcher locale={locale} page={page} ariaLabel={shared.selectLanguage} menuLabel={shared.localeMenu} />
+			<ThemeToggle />
+			<a class="nav-cta" href={openHref}>{openFile}</a>
+		</nav>
+	</div>
+</header>

@@ -1,0 +1,106 @@
+---
+import { getTranslations, localizedPath, type Locale } from '../i18n';
+
+interface Props {
+	locale: Locale;
+}
+
+const { locale } = Astro.props;
+const copy = getTranslations(locale);
+const t = copy.home;
+---
+<main>
+	<section class="hero hero-wide container" aria-labelledby="hero-title">
+		<div class="hero-copy">
+			<p class="eyebrow">{t.heroEyebrow}</p>
+			<h1 id="hero-title">{t.heroTitleBefore} <span>winmail.dat</span>{t.heroTitleAfter}</h1>
+			<p class="hero-lede">{t.heroLead}</p>
+		</div>
+		<div class="hero-orbit" aria-hidden="true">
+			<div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+			<div class="file-glyph"><span>.dat</span><svg viewBox="0 0 24 24" fill="none"><path d="M7 3.75h6.5L18 8.25v12H7v-16.5Z" stroke="currentColor" stroke-width="1.5"/><path d="M13 3.75v4.5h5M10 12h5M10 15.5h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+		</div>
+	</section>
+
+	<section class="tool-section container" id="opener" aria-labelledby="tool-title">
+		<div class="tool-card">
+			<div class="tool-card-header"><div><p class="eyebrow">{t.toolEyebrow}</p><h2 id="tool-title">{t.toolTitle}</h2></div><span class="privacy-badge"><span class="status-dot"></span>{t.quick}</span></div>
+			<div class="dropzone" id="dropzone" tabindex="0" role="button" aria-controls="file-input" aria-describedby="dropzone-help">
+				<input id="file-input" type="file" accept=".dat,application/octet-stream,application/x-tnef" hidden />
+				<div class="upload-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 15V4m0 0L8 8m4-4 4 4M5 14v4.25A1.75 1.75 0 0 0 6.75 20h10.5A1.75 1.75 0 0 0 19 18.25V14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+				<h3>{t.dropTitle}</h3><p id="dropzone-help">{t.browseLead} <button type="button" class="inline-action" id="browse-button">{t.browse}</button></p><span class="file-hint">{t.fileHint}</span>
+			</div>
+			<div class="tool-status" id="tool-status" aria-live="polite" aria-atomic="true"><span class="status-icon" aria-hidden="true">✓</span><span id="status-text">{t.ready}</span></div>
+			<div class="result-panel" id="result-panel" hidden>
+				<div class="result-header"><div><p class="eyebrow">{t.recoveredEyebrow}</p><h3 id="result-title">{t.filesReady}</h3></div><button class="button button-dark" id="download-all" type="button">{t.downloadAll} <span aria-hidden="true">↓</span></button></div>
+				<div class="partial-notice" id="partial-notice" hidden></div><ul class="attachment-list" id="attachment-list"></ul>
+				<div class="result-footer"><span id="result-summary"></span><button class="text-button" id="reset-button" type="button">{t.openAnother}</button></div>
+			</div>
+			<div class="error-panel" id="error-panel" role="alert" hidden><div class="error-icon" aria-hidden="true">!</div><div><h3 id="error-title">{t.errorTitle}</h3><p id="error-message">{t.errorMessage}</p></div><button class="text-button" id="retry-button" type="button">{t.tryAgain}</button></div>
+		</div>
+		<p class="privacy-note"><span aria-hidden="true">⊙</span> {t.privacyNote} <a href={localizedPath(locale, 'privacy')}>{t.readPrivacy}</a></p>
+	</section>
+
+	<section class="proof-section"><div class="container proof-grid"><div><p class="eyebrow">{t.proofEyebrow}</p><h2>{t.proofTitle}</h2></div><div class="proof-items">{t.proof.map((item, index) => <article><span class="proof-number">0{index + 1}</span><div><h3>{item.title}</h3><p>{item.body}</p></div></article>)}</div></div></section>
+	<section class="content-section container" id="how-it-works" aria-labelledby="how-title"><div class="section-heading"><p class="eyebrow">{t.howEyebrow}</p><h2 id="how-title">{t.howTitle}</h2></div><div class="steps-grid">{t.steps.map((step, index) => <article class="step-card"><span>{index + 1}</span><h3>{step.title}</h3><p>{step.body}</p></article>)}</div></section>
+	<section class="faq-section" id="faq" aria-labelledby="faq-title"><div class="container faq-layout"><div class="section-heading"><p class="eyebrow">{t.faqEyebrow}</p><h2 id="faq-title">{t.faqTitle}</h2></div><div class="faq-list">{t.faq.map((item) => <details><summary>{item.question}</summary><p>{item.answer}</p></details>)}</div></div></section>
+</main>
+
+<script define:vars={{ runtime: t.runtime, ready: t.ready }}>
+	import { zipSync } from 'fflate';
+	import { parseTnef } from 'omnimail';
+
+	const MAX_FILE_SIZE = 150 * 1024 * 1024;
+	const isSupportedFile = (file: File) => file.name.toLowerCase().endsWith('.dat') || file.type === 'application/x-tnef';
+	const dropzone = document.querySelector<HTMLDivElement>('#dropzone');
+	const input = document.querySelector<HTMLInputElement>('#file-input');
+	const browseButton = document.querySelector<HTMLButtonElement>('#browse-button');
+	const status = document.querySelector<HTMLDivElement>('#tool-status');
+	const statusText = document.querySelector<HTMLSpanElement>('#status-text');
+	const resultPanel = document.querySelector<HTMLDivElement>('#result-panel');
+	const errorPanel = document.querySelector<HTMLDivElement>('#error-panel');
+	const errorTitle = document.querySelector<HTMLHeadingElement>('#error-title');
+	const errorMessage = document.querySelector<HTMLParagraphElement>('#error-message');
+	const list = document.querySelector<HTMLUListElement>('#attachment-list');
+	const resultSummary = document.querySelector<HTMLSpanElement>('#result-summary');
+	const partialNotice = document.querySelector<HTMLDivElement>('#partial-notice');
+	const downloadAll = document.querySelector<HTMLButtonElement>('#download-all');
+	const resetButton = document.querySelector<HTMLButtonElement>('#reset-button');
+	const retryButton = document.querySelector<HTMLButtonElement>('#retry-button');
+	const statusIcon = document.querySelector<HTMLSpanElement>('.status-icon');
+	let attachments: Array<{ name: string; mimeType: string; content: Uint8Array; size: number }> = [];
+	let objectUrls: string[] = [];
+	const formatBytes = (bytes: number) => bytes < 1024 ? `${bytes} B` : bytes < 1024 * 1024 ? `${(bytes / 1024).toFixed(1)} KB` : `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+	const iconFor = (mimeType: string) => mimeType.includes('image') ? '▧' : mimeType.includes('pdf') ? 'PDF' : 'DOC';
+	const setStatus = (message: string, state = 'idle') => { statusText!.textContent = message; status!.dataset.state = state; statusIcon!.textContent = state === 'error' ? '!' : state === 'busy' ? '…' : '✓'; };
+	const clearUrls = () => { objectUrls.forEach((url) => URL.revokeObjectURL(url)); objectUrls = []; };
+	const showError = (title: string, message: string) => { errorTitle!.textContent = title; errorMessage!.textContent = message; errorPanel!.hidden = false; resultPanel!.hidden = true; setStatus(runtime.problem, 'error'); };
+	const safeName = (name: string, index: number) => (name.trim() || `attachment-${index + 1}`).replace(/[\\/:*?"<>|]/g, '-');
+	const escapeHtml = (value: string) => value.replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[character] ?? character));
+	const renderResults = () => {
+		clearUrls(); list!.innerHTML = '';
+		attachments.forEach((attachment) => {
+			const contentBuffer = attachment.content.buffer instanceof ArrayBuffer ? attachment.content.buffer.slice(attachment.content.byteOffset, attachment.content.byteOffset + attachment.content.byteLength) : new Uint8Array(attachment.content).buffer;
+			const url = URL.createObjectURL(new Blob([contentBuffer], { type: attachment.mimeType || 'application/octet-stream' })); objectUrls.push(url);
+			const item = document.createElement('li'); item.className = 'attachment-item';
+			item.innerHTML = `<span class="attachment-icon" aria-hidden="true">${iconFor(attachment.mimeType)}</span><span class="attachment-meta"><strong>${escapeHtml(attachment.name)}</strong><small>${escapeHtml(attachment.mimeType || 'Unknown type')} · ${formatBytes(attachment.size)}</small></span><a class="download-link" href="${url}" download="${escapeHtml(attachment.name)}" aria-label="${runtime.downloadAria.replace('{name}', escapeHtml(attachment.name))}">${runtime.download} <span aria-hidden="true">↓</span></a>`;
+			list!.appendChild(item);
+		});
+		resultSummary!.textContent = (attachments.length === 1 ? runtime.recoveredOne : runtime.recoveredMany).replace('{count}', String(attachments.length)); resultPanel!.hidden = false; errorPanel!.hidden = true; setStatus(runtime.done, 'success');
+	};
+	const processFile = async (file: File) => {
+		resetButton!.disabled = true; errorPanel!.hidden = true; resultPanel!.hidden = true;
+		if (!isSupportedFile(file)) { showError(runtime.unsupportedTitle, runtime.unsupportedMessage); return; }
+		if (file.size > MAX_FILE_SIZE) { showError(runtime.tooLargeTitle, runtime.tooLargeMessage); return; }
+		try {
+			setStatus(runtime.reading, 'busy'); await new Promise((resolve) => setTimeout(resolve, 120)); const bytes = new Uint8Array(await file.arrayBuffer()); setStatus(runtime.searching, 'busy'); const parsed = parseTnef(bytes);
+			attachments = parsed.attachments.filter((attachment) => attachment.content?.byteLength).map((attachment, index) => ({ name: safeName(attachment.filename || '', index), mimeType: attachment.mimeType, content: attachment.content, size: attachment.size || attachment.content.byteLength }));
+			const failedAttachments = parsed.attachments.length - attachments.length;
+			if (!attachments.length) { showError(runtime.noAttachmentsTitle, runtime.noAttachmentsMessage); return; }
+			partialNotice!.hidden = failedAttachments === 0; partialNotice!.textContent = failedAttachments > 0 ? (failedAttachments === 1 ? runtime.partialOne : runtime.partialMany).replace('{count}', String(failedAttachments)) : ''; renderResults();
+		} catch (error) { console.error(error); showError(runtime.decodeTitle, runtime.decodeMessage); } finally { resetButton!.disabled = false; }
+	};
+	const reset = () => { clearUrls(); attachments = []; input!.value = ''; resultPanel!.hidden = true; errorPanel!.hidden = true; partialNotice!.hidden = true; setStatus(ready, 'idle'); };
+	const downloadZip = () => { if (!attachments.length) return; try { const files: Record<string, Uint8Array> = {}; attachments.forEach((attachment, index) => { files[`${String(index + 1).padStart(2, '0')}-${attachment.name}`] = attachment.content; }); const zip = zipSync(files, { level: 6 }); const url = URL.createObjectURL(new Blob([zip], { type: 'application/zip' })); const link = document.createElement('a'); link.href = url; link.download = 'winmail-attachments.zip'; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); } catch (error) { console.error(error); showError(runtime.zipTitle, runtime.zipMessage); } };
+	dropzone?.addEventListener('click', (event) => { if ((event.target as HTMLElement).closest('button')) return; input?.click(); }); dropzone?.addEventListener('keydown', (event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); input?.click(); } }); browseButton?.addEventListener('click', () => input?.click()); input?.addEventListener('change', () => { const file = input.files?.[0]; if (file) processFile(file); }); ['dragenter', 'dragover'].forEach((eventName) => dropzone?.addEventListener(eventName, (event) => { event.preventDefault(); dropzone.dataset.dragging = 'true'; })); ['dragleave', 'drop'].forEach((eventName) => dropzone?.addEventListener(eventName, (event) => { event.preventDefault(); dropzone.dataset.dragging = 'false'; })); dropzone?.addEventListener('drop', (event) => { const file = (event as DragEvent).dataTransfer?.files[0]; if (file) processFile(file); }); downloadAll?.addEventListener('click', downloadZip); resetButton?.addEventListener('click', reset); retryButton?.addEventListener('click', reset);
+</script>

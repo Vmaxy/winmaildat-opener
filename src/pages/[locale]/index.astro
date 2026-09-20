@@ -1,0 +1,19 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import HomePage from '../../components/HomePage.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import { getTranslations, locales, type Locale } from '../../i18n';
+
+export function getStaticPaths() {
+	return locales.filter((locale) => locale !== 'en').map((locale) => ({ params: { locale } }));
+}
+
+const locale = Astro.params.locale as Locale;
+const copy = getTranslations(locale);
+---
+<Layout locale={locale} page="home">
+	<Fragment slot="header"><SiteHeader locale={locale} page="home" navHow={copy.home.navHow} navFaq={copy.home.navFaq} openFile={copy.home.openFile} shared={copy.shared} /></Fragment>
+	<HomePage locale={locale} />
+	<Fragment slot="footer"><SiteFooter locale={locale} shared={copy.shared} /></Fragment>
+</Layout>

@@ -1,18 +1,14 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import ThemeToggle from '../components/ThemeToggle.astro';
----
+import ContentPage from '../components/ContentPage.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { getTranslations } from '../i18n';
 
-<Layout title="How Winmail.dat Opener works" description="Learn how Winmail.dat Opener recovers attachments locally in your browser.">
-	<header class="site-header"><div class="container nav-inner"><a class="wordmark" href="/" aria-label="Winmail.dat Opener home"><span class="wordmark-mark" aria-hidden="true">↗</span><span>winmail.dat opener</span></a><nav class="nav-links" aria-label="Main navigation"><a href="/#faq">FAQ</a><ThemeToggle /><a class="nav-cta" href="/">Open a file</a></nav></div></header>
-	<main class="content-section container">
-		<div class="section-heading"><p class="eyebrow">How it works</p><h1>What happens to your file.</h1><p class="hero-lede">Winmail.dat Opener is a small browser utility for one specific email problem: getting the real attachments back out of a TNEF container, whether it is named winmail.dat or ATT0001.dat.</p></div>
-		<div class="steps-grid">
-			<article class="step-card"><span>1</span><h3>You choose a file</h3><p>Use the picker or drop a `.dat` attachment onto the opener. Files are checked for type and size before processing.</p></article>
-			<article class="step-card"><span>2</span><h3>Your browser reads it</h3><p>The file is read with browser APIs and decoded in memory using a TNEF parser. There is no upload request for the file bytes.</p></article>
-			<article class="step-card"><span>3</span><h3>You save the results</h3><p>Recovered attachments become local download links. You can save one file or create a ZIP directly on your device.</p></article>
-		</div>
-		<div class="info-callout"><p class="eyebrow">Privacy note</p><h2>Your file does not need to leave your device.</h2><p>Like any browser tool, this page still needs to load its code and assets. The selected file itself is processed locally; it is not sent to Winmail.dat Opener or another service.</p></div>
-	</main>
-	<footer class="site-footer"><div class="container footer-inner"><a class="wordmark" href="/"><span class="wordmark-mark" aria-hidden="true">↗</span><span>winmail.dat opener</span></a><p><a href="/faq">Read the FAQ</a> · <a href="/">Open the decoder</a></p></div></footer>
+const copy = getTranslations('en');
+---
+<Layout locale="en" page="how-it-works" title="How Winmail.dat Opener works" description={copy.pages.how.lead}>
+	<Fragment slot="header"><SiteHeader locale="en" page="how-it-works" navHow={copy.home.navHow} navFaq={copy.home.navFaq} openFile={copy.home.openFile} shared={copy.shared} /></Fragment>
+	<ContentPage locale="en" page="how-it-works" />
+	<Fragment slot="footer"><SiteFooter locale="en" shared={copy.shared} /></Fragment>
 </Layout>

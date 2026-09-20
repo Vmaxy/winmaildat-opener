@@ -1,0 +1,48 @@
+---
+import { getTranslations, localizedPath, type Locale, type PageKey } from '../i18n';
+
+interface Props {
+	locale: Locale;
+	page: Exclude<PageKey, 'home'>;
+}
+
+const { locale, page } = Astro.props;
+const copy = getTranslations(locale);
+const shared = copy.shared;
+---
+{page === 'faq' && (
+	<main class="content-section container">
+		<div class="section-heading"><p class="eyebrow">{copy.pages.faq.eyebrow}</p><h1>{copy.pages.faq.title}</h1><p class="hero-lede">{copy.pages.faq.lead}</p></div>
+		<div class="faq-list faq-page-list">
+			{copy.pages.faq.items.map((item, index) => <details open={index === 0}><summary>{item.question}</summary><p>{item.answer}</p></details>)}
+		</div>
+	</main>
+)}
+{page === 'how-it-works' && (
+	<main class="content-section container">
+		<div class="section-heading"><p class="eyebrow">{copy.pages.how.eyebrow}</p><h1>{copy.pages.how.title}</h1><p class="hero-lede">{copy.pages.how.lead}</p></div>
+		<div class="steps-grid">
+			{copy.pages.how.steps.map((step, index) => <article class="step-card"><span>{index + 1}</span><h3>{step.title}</h3><p>{step.body}</p></article>)}
+		</div>
+		<div class="info-callout"><p class="eyebrow">{copy.pages.how.calloutEyebrow}</p><h2>{copy.pages.how.calloutTitle}</h2><p>{copy.pages.how.calloutBody}</p></div>
+	</main>
+)}
+{page === 'privacy' && (
+	<main class="content-section container legal-page">
+		<div class="section-heading"><p class="eyebrow">{copy.pages.privacy.eyebrow}</p><h1>{copy.pages.privacy.title}</h1><p class="hero-lede">{copy.pages.privacy.lead}</p></div>
+		<div class="legal-copy">
+			{copy.pages.privacy.sections.map((section, index) => (
+				<div class="legal-section">
+					<h2>{section.title}</h2>
+					<p>{index === copy.pages.privacy.sections.length - 1 ? <>{section.body} <a href={localizedPath(locale, 'contact')}>{copy.pages.privacy.contactLink}</a>.</> : section.body}</p>
+				</div>
+			))}
+		</div>
+	</main>
+)}
+{page === 'contact' && (
+	<main class="content-section container">
+		<div class="section-heading"><p class="eyebrow">{copy.pages.contact.eyebrow}</p><h1>{copy.pages.contact.title}</h1><p class="hero-lede">{copy.pages.contact.lead}</p></div>
+		<div class="info-callout contact-card"><p class="eyebrow">{copy.pages.contact.calloutEyebrow}</p><h2><a href="mailto:wisecitadel@gmail.com">wisecitadel@gmail.com</a></h2><p>{copy.pages.contact.calloutBody}</p></div>
+	</main>
+)}

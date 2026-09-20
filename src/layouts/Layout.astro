@@ -1,33 +1,39 @@
 ---
 import '../styles/global.css';
+import { getTranslations, type Locale, type PageKey } from '../i18n';
 
 interface Props {
 	title?: string;
 	description?: string;
 	path?: string;
+	locale?: Locale;
+	page?: PageKey;
 }
 
 const {
-	title = 'Winmail.dat Opener — Recover email attachments privately',
-	description = 'Open winmail.dat files in your browser and download the attachments inside. Your files stay on your device.',
+	title,
+	description,
 	path = Astro.url.pathname,
+	locale = 'en',
+	page = 'home',
 } = Astro.props;
+const copy = getTranslations(locale);
 const canonical = new URL(path, 'https://winmaildatopener.com').toString();
 ---
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang={locale} data-page={page} data-theme="light">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
-		<meta name="description" content={description} />
+		<meta name="description" content={description ?? copy.siteDescription} />
 		<link rel="canonical" href={canonical} />
 		<meta property="og:type" content="website" />
 		<meta property="og:url" content={canonical} />
-		<meta property="og:title" content={title} />
-		<meta property="og:description" content={description} />
+		<meta property="og:title" content={title ?? copy.siteTitle} />
+		<meta property="og:description" content={description ?? copy.siteDescription} />
 		<meta name="theme-color" id="theme-color" content="#fafafa" />
 		<script is:inline>
 			(() => {
@@ -39,10 +45,12 @@ const canonical = new URL(path, 'https://winmaildatopener.com').toString();
 				document.documentElement.style.colorScheme = theme;
 			})();
 		</script>
-		<title>{title}</title>
+		<title>{title ?? copy.siteTitle}</title>
 	</head>
 	<body>
+		<slot name="header" />
 		<slot />
+		<slot name="footer" />
 		<script is:inline>
 			(() => {
 				const toggle = document.querySelector('#theme-toggle');
@@ -61,6 +69,7 @@ const canonical = new URL(path, 'https://winmaildatopener.com').toString();
 				toggle?.addEventListener('click', () => {
 					applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
 				});
+
 			})();
 		</script>
 	</body>

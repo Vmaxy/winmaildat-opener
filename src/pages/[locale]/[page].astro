@@ -1,0 +1,22 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ContentPage from '../../components/ContentPage.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import { getTranslations, locales, type Locale, type PageKey } from '../../i18n';
+
+export function getStaticPaths() {
+	const pageKeys = ['faq', 'how-it-works', 'privacy', 'contact'] as const;
+	return locales.filter((locale) => locale !== 'en').flatMap((locale) => pageKeys.map((page) => ({ params: { locale, page } })));
+}
+
+const locale = Astro.params.locale as Locale;
+const page = Astro.params.page as Exclude<PageKey, 'home'>;
+const copy = getTranslations(locale);
+const pageCopy = copy.pages[page === 'how-it-works' ? 'how' : page];
+---
+<Layout locale={locale} page={page} title={`${pageCopy.title} — Winmail.dat Opener`}>
+	<Fragment slot="header"><SiteHeader locale={locale} page={page} navHow={copy.home.navHow} navFaq={copy.home.navFaq} openFile={copy.home.openFile} shared={copy.shared} /></Fragment>
+	<ContentPage locale={locale} page={page} />
+	<Fragment slot="footer"><SiteFooter locale={locale} shared={copy.shared} /></Fragment>
+</Layout>

@@ -1,24 +1,14 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import ThemeToggle from '../components/ThemeToggle.astro';
----
+import ContentPage from '../components/ContentPage.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { getTranslations } from '../i18n';
 
-<Layout title="Privacy — Winmail.dat Opener" description="How Winmail.dat Opener handles files, browser data, and privacy.">
-	<header class="site-header"><div class="container nav-inner"><a class="wordmark" href="/" aria-label="Winmail.dat Opener home"><span class="wordmark-mark" aria-hidden="true">↗</span><span>winmail.dat opener</span></a><nav class="nav-links" aria-label="Main navigation"><a href="/how-it-works">How it works</a><ThemeToggle /><a class="nav-cta" href="/">Open a file</a></nav></div></header>
-	<main class="content-section container legal-page">
-		<div class="section-heading"><p class="eyebrow">Privacy</p><h1>Your file stays with you.</h1><p class="hero-lede">This page explains what happens when you use the decoder and what this site does not need to collect.</p></div>
-		<div class="legal-copy">
-			<h2>Local file processing</h2>
-			<p>When you choose a file, this website reads it with browser APIs and decodes it in your device’s memory. The selected file is not uploaded to Winmail.dat Opener, and there is no server-side file retention or download area.</p>
-			<h2>What the site can still receive</h2>
-			<p>As with any website, your browser may request the page, scripts, styles, and static assets needed to display it. Your hosting provider may receive ordinary web request information such as an IP address, timestamp, and user agent. The decoder does not need the contents of your selected file to provide the download results.</p>
-			<h2>Temporary browser data</h2>
-			<p>Recovered files are represented by temporary browser object URLs so you can download them. Those URLs are revoked when you reset the tool or leave the page. The page does not intentionally save recovered files to a cloud account.</p>
-			<h2>Third-party services</h2>
-			<p>The first release is designed without advertising pixels, analytics scripts, or third-party upload services. If that changes, this page should be updated before those services are enabled.</p>
-			<h2>Questions</h2>
-			<p>If you have a privacy or recovery question, use the <a href="/contact">contact page</a>. Please do not email confidential files unless you have independently decided that sharing them is safe.</p>
-		</div>
-	</main>
-	<footer class="site-footer"><div class="container footer-inner"><a class="wordmark" href="/"><span class="wordmark-mark" aria-hidden="true">↗</span><span>winmail.dat opener</span></a><p><a href="/contact">Contact</a> · <a href="/">Open the decoder</a></p></div></footer>
+const copy = getTranslations('en');
+---
+<Layout locale="en" page="privacy" title="Privacy — Winmail.dat Opener" description={copy.pages.privacy.lead}>
+	<Fragment slot="header"><SiteHeader locale="en" page="privacy" navHow={copy.home.navHow} navFaq={copy.home.navFaq} openFile={copy.home.openFile} shared={copy.shared} /></Fragment>
+	<ContentPage locale="en" page="privacy" />
+	<Fragment slot="footer"><SiteFooter locale="en" shared={copy.shared} /></Fragment>
 </Layout>
