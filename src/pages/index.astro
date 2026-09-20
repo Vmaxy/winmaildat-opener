@@ -70,6 +70,7 @@ import Layout from '../layouts/Layout.astro';
 						</div>
 						<button class="button button-dark" id="download-all" type="button">Download all <span aria-hidden="true">↓</span></button>
 					</div>
+					<div class="partial-notice" id="partial-notice" hidden></div>
 					<ul class="attachment-list" id="attachment-list"></ul>
 					<div class="result-footer">
 						<span id="result-summary"></span>
@@ -86,7 +87,7 @@ import Layout from '../layouts/Layout.astro';
 					<button class="text-button" id="retry-button" type="button">Try again</button>
 				</div>
 			</div>
-			<p class="privacy-note"><span aria-hidden="true">⊙</span> Your file is read locally by this page. It is never sent to a server.</p>
+			<p class="privacy-note"><span aria-hidden="true">⊙</span> Your file is read locally by this page. <a href="/privacy">Read our privacy note.</a></p>
 		</section>
 
 		<section class="proof-section">
@@ -131,7 +132,7 @@ import Layout from '../layouts/Layout.astro';
 	<footer class="site-footer">
 		<div class="container footer-inner">
 			<a class="wordmark" href="/" aria-label="Winmail.dat Opener home"><span class="wordmark-mark" aria-hidden="true">↗</span><span>winmail.dat opener</span></a>
-			<p>Free to use. Built for the attachments that got lost in translation.</p>
+			<p><a href="/privacy">Privacy</a> · <a href="/contact">Contact</a> · Free to use.</p>
 		</div>
 	</footer>
 </Layout>
@@ -152,6 +153,7 @@ import Layout from '../layouts/Layout.astro';
 	const errorMessage = document.querySelector<HTMLParagraphElement>('#error-message');
 	const list = document.querySelector<HTMLUListElement>('#attachment-list');
 	const resultSummary = document.querySelector<HTMLSpanElement>('#result-summary');
+	const partialNotice = document.querySelector<HTMLDivElement>('#partial-notice');
 	const downloadAll = document.querySelector<HTMLButtonElement>('#download-all');
 	const resetButton = document.querySelector<HTMLButtonElement>('#reset-button');
 	const retryButton = document.querySelector<HTMLButtonElement>('#retry-button');
@@ -182,6 +184,9 @@ import Layout from '../layouts/Layout.astro';
 		const trimmed = name.trim() || `attachment-${index + 1}`;
 		return trimmed.replace(/[\\/:*?"<>|]/g, '-');
 	};
+	const escapeHtml = (value: string) => value.replace(/[&<>"']/g, (character) => ({
+		'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;',
+	}[character] ?? character));
 	const renderResults = () => {
 		clearUrls();
 		list!.innerHTML = '';
@@ -194,7 +199,7 @@ import Layout from '../layouts/Layout.astro';
 			objectUrls.push(url);
 			const item = document.createElement('li');
 			item.className = 'attachment-item';
-			item.innerHTML = `<span class="attachment-icon" aria-hidden="true">${iconFor(attachment.mimeType)}</span><span class="attachment-meta"><strong>${attachment.name}</strong><small>${attachment.mimeType || 'Unknown type'} · ${formatBytes(attachment.size)}</small></span><a class="download-link" href="${url}" download="${attachment.name}" aria-label="Download ${attachment.name}">Download <span aria-hidden="true">↓</span></a>`;
+			item.innerHTML = `<span class="attachment-icon" aria-hidden="true">${iconFor(attachment.mimeType)}</span><span class="attachment-meta"><strong>${escapeHtml(attachment.name)}</strong><small>${escapeHtml(attachment.mimeType || 'Unknown type')} · ${formatBytes(attachment.size)}</small></span><a class="download-link" href="${url}" download="${escapeHtml(attachment.name)}" aria-label="Download ${escapeHtml(attachment.name)}">Download <span aria-hidden="true">↓</span></a>`;
 			list!.appendChild(item);
 		});
 		resultSummary!.textContent = `${attachments.length} ${attachments.length === 1 ? 'file' : 'files'} recovered`;
@@ -228,10 +233,15 @@ import Layout from '../layouts/Layout.astro';
 					content: attachment.content,
 					size: attachment.size || attachment.content.byteLength,
 				}));
+			const failedAttachments = parsed.attachments.length - attachments.length;
 			if (!attachments.length) {
-				showError('No attachments were found.', 'This file may be incomplete, or it may only contain email formatting without a recoverable attachment.');
+				showError('No attachments were found.', 'This file may only contain email formatting, fonts, or pasted inline images. If you expected a file, download the original attachment again and retry.');
 				return;
 			}
+			partialNotice!.hidden = failedAttachments === 0;
+			partialNotice!.textContent = failedAttachments > 0
+				? `${failedAttachments} attachment${failedAttachments === 1 ? '' : 's'} could not be recovered. The files below are ready to download.`
+				: '';
 			renderResults();
 		} catch (error) {
 			console.error(error);
@@ -246,6 +256,7 @@ import Layout from '../layouts/Layout.astro';
 		input!.value = '';
 		resultPanel!.hidden = true;
 		errorPanel!.hidden = true;
+		partialNotice!.hidden = true;
 		setStatus('Ready when you are.', 'idle');
 	};
 	const downloadZip = () => {
