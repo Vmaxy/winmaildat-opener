@@ -61,7 +61,7 @@ a { color: inherit; }
 .container { width: min(1120px, calc(100% - 48px)); margin-inline: auto; }
 .site-header { border-bottom: 1px solid var(--hairline); background: var(--header-bg); backdrop-filter: blur(12px); }
 .nav-inner, .footer-inner { min-height: 68px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
-.wordmark { display: inline-flex; align-items: center; gap: 9px; text-decoration: none; font-size: 14px; font-weight: 600; letter-spacing: -.2px; }
+.wordmark { display: inline-flex; align-items: center; gap: 9px; text-decoration: none; font-size: 15px; font-weight: 600; letter-spacing: -.2px; }
 .wordmark-mark { display: grid; place-items: center; width: 23px; height: 23px; color: var(--contrast-text); background: var(--contrast-surface); border-radius: 6px; font-size: 17px; transform: rotate(-8deg); }
 .nav-links { display: flex; align-items: center; gap: 8px; color: var(--body); font-size: 14px; }
 .nav-links a { padding: 10px 12px; text-decoration: none; border-radius: 999px; }
