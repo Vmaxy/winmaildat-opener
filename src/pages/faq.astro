@@ -1,0 +1,18 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="FAQ — Winmail.dat Opener" description="Answers about opening winmail.dat files, privacy, limits, and recovered attachments.">
+	<header class="site-header"><div class="container nav-inner"><a class="wordmark" href="/" aria-label="Winmail.dat Opener home"><span class="wordmark-mark" aria-hidden="true">↗</span><span>winmail.dat opener</span></a><nav class="nav-links" aria-label="Main navigation"><a href="/how-it-works">How it works</a><a class="nav-cta" href="/">Open a file</a></nav></div></header>
+	<main class="content-section container">
+		<div class="section-heading"><p class="eyebrow">FAQ</p><h1>Answers before you start.</h1><p class="hero-lede">A few practical notes about Outlook’s winmail.dat files and this browser-based decoder.</p></div>
+		<div class="faq-list faq-page-list">
+			<details open><summary>Why did I receive a winmail.dat file?</summary><p>Microsoft Outlook can package rich-text formatting, calendar details, and attachments using Transport Neutral Encapsulation Format (TNEF). Mail apps that do not understand TNEF often show the package as winmail.dat.</p></details>
+			<details><summary>Is my file uploaded?</summary><p>No. The selected file is read and decoded in your browser. The application does not need to upload the file contents to recover the attachments.</p></details>
+			<details><summary>What file size can I use?</summary><p>The first release accepts DAT files up to 50 MB. This keeps local processing responsive and limits memory pressure on phones and older devices.</p></details>
+			<details><summary>Why did the tool find no attachments?</summary><p>The file may be incomplete, may only contain formatting metadata, or may not actually be a TNEF container. Downloading the original attachment again is the best first retry.</p></details>
+			<details><summary>Can I download everything together?</summary><p>Yes. After a successful decode, choose Download all to create a ZIP in your browser. Individual download links are also available for each recovered file.</p></details>
+		</div>
+	</main>
+	<footer class="site-footer"><div class="container footer-inner"><a class="wordmark" href="/"><span class="wordmark-mark" aria-hidden="true">↗</span><span>winmail.dat opener</span></a><p><a href="/how-it-works">How it works</a> · <a href="/">Open the decoder</a></p></div></footer>
+</Layout>
