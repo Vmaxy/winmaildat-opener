@@ -27,6 +27,12 @@ type RuntimeCopy = {
 type Attachment = { name: string; mimeType: string; content: Uint8Array; size: number };
 
 const MAX_FILE_SIZE = 150 * 1024 * 1024;
+const TNEF_SIGNATURE = 0x223e9f78;
+const TNEF_ATTACHMENT_LEVEL = 2;
+const TNEF_ATTACH_REND_DATA = 0x9002;
+const TNEF_ATTACH_DATA = 0x800f;
+const TNEF_ATTACH_TITLE = 0x8010;
+const TNEF_ATTACH_MIME_TAG = 0x9013;
 const dropzone = document.querySelector<HTMLDivElement>('#dropzone');
 const input = document.querySelector<HTMLInputElement>('#file-input');
 
@@ -54,6 +60,36 @@ if (dropzone && input) {
 	const formatBytes = (bytes: number) => bytes < 1024 ? `${bytes} B` : bytes < 1024 * 1024 ? `${(bytes / 1024).toFixed(1)} KB` : `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 	const iconFor = (mimeType: string) => mimeType.includes('image') ? '▧' : mimeType.includes('pdf') ? 'PDF' : 'DOC';
 	const isSupportedFile = (file: File) => file.name.toLowerCase().endsWith('.dat') || file.type === 'application/x-tnef';
+	const decodeTnefText = (bytes: Uint8Array) => new TextDecoder('windows-1252').decode(bytes).replace(/\0+$/, '').trim();
+	const parseRawTnef = (bytes: Uint8Array): Attachment[] => {
+		const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+		if (bytes.byteLength < 6 || view.getUint32(0, true) !== TNEF_SIGNATURE) return [];
+		const parsed: Attachment[] = [];
+		let current: { filename?: string; mimeType?: string; content?: Uint8Array } | undefined;
+		let offset = 6;
+		while (offset + 9 <= bytes.byteLength) {
+			const level = bytes[offset] ?? 0;
+			const attribute = view.getUint16(offset + 1, true);
+			const length = view.getUint32(offset + 5, true);
+			const dataStart = offset + 9;
+			const dataEnd = dataStart + length;
+			if (dataEnd + 2 > bytes.byteLength) throw new Error('Truncated TNEF record');
+			const data = bytes.subarray(dataStart, dataEnd);
+			offset = dataEnd + 2;
+			if (level !== TNEF_ATTACHMENT_LEVEL) continue;
+			if (attribute === TNEF_ATTACH_REND_DATA) {
+				if (current?.content) parsed.push({ name: safeName(current.filename ?? '', parsed.length), mimeType: current.mimeType ?? 'application/octet-stream', content: current.content, size: current.content.byteLength });
+				current = {};
+			} else if (!current) {
+				current = {};
+			}
+			if (attribute === TNEF_ATTACH_DATA) current.content = data.slice();
+			else if (attribute === TNEF_ATTACH_TITLE) current.filename = decodeTnefText(data);
+			else if (attribute === TNEF_ATTACH_MIME_TAG) current.mimeType = decodeTnefText(data).toLowerCase();
+		}
+		if (current?.content) parsed.push({ name: safeName(current.filename ?? '', parsed.length), mimeType: current.mimeType ?? 'application/octet-stream', content: current.content, size: current.content.byteLength });
+		return parsed;
+	};
 	const setStatus = (message: string, state = 'idle') => {
 		if (statusText) statusText.textContent = message;
 		if (status) status.dataset.state = state;
@@ -98,9 +134,10 @@ if (dropzone && input) {
 			await new Promise((resolve) => setTimeout(resolve, 120));
 			const bytes = new Uint8Array(await file.arrayBuffer());
 			setStatus(runtime.searching, 'busy');
-			const parsed = parse(bytes, { unwrapTnef: defaultTnefUnwrapper });
-			attachments = parsed.attachments.filter((attachment) => attachment.content?.byteLength).map((attachment, index) => ({ name: safeName(attachment.filename || '', index), mimeType: attachment.mimeType, content: attachment.content, size: attachment.size || attachment.content.byteLength }));
-			const failedAttachments = parsed.attachments.length - attachments.length;
+			const rawAttachments = parseRawTnef(bytes);
+			const parsed = rawAttachments.length ? undefined : parse(bytes, { unwrapTnef: defaultTnefUnwrapper });
+			attachments = rawAttachments.length ? rawAttachments : (parsed?.attachments ?? []).filter((attachment) => attachment.content?.byteLength).map((attachment, index) => ({ name: safeName(attachment.filename || '', index), mimeType: attachment.mimeType, content: attachment.content, size: attachment.size || attachment.content.byteLength }));
+			const failedAttachments = parsed ? parsed.attachments.length - attachments.length : 0;
 			if (!attachments.length) { showError(runtime.noAttachmentsTitle, runtime.noAttachmentsMessage); return; }
 			if (partialNotice) {
 				partialNotice.hidden = failedAttachments === 0;
