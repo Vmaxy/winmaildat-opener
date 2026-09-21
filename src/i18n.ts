@@ -117,8 +117,8 @@ type Translation = {
 };
 
 const en: Translation = {
-	siteTitle: 'Winmail.dat Opener — Recover email attachments privately',
-	siteDescription: 'Open winmail.dat files in your browser and download the attachments inside. Your files stay on your device.',
+	siteTitle: 'Winmail.dat Opener — Free Online Viewer',
+	siteDescription: 'Open and view winmail.dat files online for free. Recover email attachments privately in your browser on Mac, Windows, or phone.',
 	home: {
 		navHow: 'How it works', navFaq: 'FAQ', openFile: 'Open a file', heroEyebrow: 'A private file utility',
 		heroTitleBefore: 'Extract the files hiding inside', heroTitleAfter: '.', heroLead: 'Drop in the attachment you could not open. We extract it right in your browser and give you the files back — no upload, no account, no waiting.',

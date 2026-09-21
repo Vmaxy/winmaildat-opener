@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import { getTranslations, type Locale, type PageKey } from '../i18n';
+import { getTranslations, localizedPath, type Locale, type PageKey } from '../i18n';
 
 interface Props {
 	title?: string;
@@ -19,6 +19,14 @@ const {
 } = Astro.props;
 const copy = getTranslations(locale);
 const canonical = new URL(path, 'https://winmaildatopener.com').toString();
+const ogImage = new URL('/og-image.svg', 'https://winmaildatopener.com').toString();
+const ogLocale = ({ en: 'en_US', de: 'de_DE', es: 'es_ES', ja: 'ja_JP' } as const)[locale];
+const alternateLocales = ({
+	en: ['de', 'es', 'ja'],
+	de: ['en', 'es', 'ja'],
+	es: ['en', 'de', 'ja'],
+	ja: ['en', 'de', 'es'],
+} satisfies Record<Locale, Locale[]>)[locale];
 ---
 <!doctype html>
 <html lang={locale} data-page={page} data-theme="light">
@@ -34,6 +42,22 @@ const canonical = new URL(path, 'https://winmaildatopener.com').toString();
 		<meta property="og:url" content={canonical} />
 		<meta property="og:title" content={title ?? copy.siteTitle} />
 		<meta property="og:description" content={description ?? copy.siteDescription} />
+		<meta property="og:site_name" content="Winmail.dat Opener" />
+		<meta property="og:locale" content={ogLocale} />
+		<meta property="og:image" content={ogImage} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content="Winmail.dat Opener — open winmail.dat files and recover email attachments privately." />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title ?? copy.siteTitle} />
+		<meta name="twitter:description" content={description ?? copy.siteDescription} />
+		<meta name="twitter:image" content={ogImage} />
+		<meta name="twitter:image:alt" content="Winmail.dat Opener — open winmail.dat files and recover email attachments privately." />
+		{alternateLocales.map((alternateLocale) => (
+			<link rel="alternate" hreflang={alternateLocale} href={new URL(localizedPath(alternateLocale, page), 'https://winmaildatopener.com').toString()} />
+		))}
+		<link rel="alternate" hreflang={locale} href={canonical} />
+		<link rel="alternate" hreflang="x-default" href={new URL(localizedPath('en', page), 'https://winmaildatopener.com').toString()} />
 		<meta name="theme-color" id="theme-color" content="#fafafa" />
 		<script is:inline>
 			(() => {

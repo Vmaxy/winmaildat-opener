@@ -8,6 +8,11 @@ interface Props {
 const { locale } = Astro.props;
 const copy = getTranslations(locale);
 const t = copy.home;
+const faqSchema = t.faq.map((item) => ({
+	'@type': 'Question',
+	name: item.question,
+	acceptedAnswer: { '@type': 'Answer', text: item.answer },
+}));
 ---
 <main>
 	<section class="hero hero-wide container" aria-labelledby="hero-title">
@@ -44,7 +49,46 @@ const t = copy.home;
 	<section class="proof-section"><div class="container proof-grid"><div><p class="eyebrow">{t.proofEyebrow}</p><h2>{t.proofTitle}</h2></div><div class="proof-items">{t.proof.map((item, index) => <article><span class="proof-number">0{index + 1}</span><div><h3>{item.title}</h3><p>{item.body}</p></div></article>)}</div></div></section>
 	<section class="content-section container" id="how-it-works" aria-labelledby="how-title"><div class="section-heading"><p class="eyebrow">{t.howEyebrow}</p><h2 id="how-title">{t.howTitle}</h2></div><div class="steps-grid">{t.steps.map((step, index) => <article class="step-card"><span>{index + 1}</span><h3>{step.title}</h3><p>{step.body}</p></article>)}</div></section>
 	<section class="faq-section" id="faq" aria-labelledby="faq-title"><div class="container faq-layout"><div class="section-heading"><p class="eyebrow">{t.faqEyebrow}</p><h2 id="faq-title">{t.faqTitle}</h2></div><div class="faq-list">{t.faq.map((item) => <details><summary>{item.question}</summary><p>{item.answer}</p></details>)}</div></div></section>
+	{locale === 'en' && <section class="seo-copy-section container" aria-labelledby="seo-copy-title">
+		<div class="seo-copy">
+			<p class="eyebrow">Winmail.dat guide</p>
+			<h2 id="seo-copy-title">A free, private way to open winmail.dat files online</h2>
+			<p>A <strong>winmail.dat</strong> file is usually an email attachment container created by Microsoft Outlook. When a message is sent in Rich Text Format, Outlook can package the real attachments, formatting instructions, and other message data inside a Transport Neutral Encapsulation Format (TNEF) file. If your mail app does not understand TNEF, it may show only a file called <strong>winmail.dat</strong> instead of the PDF, image, document, or calendar file you expected.</p>
+			<p>Winmail.dat Opener gives you a simple way to <strong>open winmail.dat</strong> without installing a desktop program. Use the file picker or drag the attachment onto the tool and it reads the file directly in your browser. The decoder finds the recoverable attachments, shows their names and sizes, and lets you download them individually or together in a ZIP. It also supports the common <strong>winmail dat file</strong> variations that arrive with names such as ATT0001.dat.</p>
+			<h3>How to use this winmail.dat viewer</h3>
+			<p>To use the <strong>winmail dat opener online</strong>, first save the attachment from your email to your device. Then choose it in the opener above. The tool checks that the file is a supported TNEF container, unpacks it locally, and presents the files inside. This is useful when you need to view a winmail.dat attachment on a laptop, tablet, or phone and do not want to install Outlook just to access one file.</p>
+			<p>The process is intentionally short: select the file, wait while your browser decodes it, and download the recovered attachment. If the message contains several files, you can download each one or use the Download all option. The tool accepts winmail.dat and ATT0001.dat files up to 150 MB, which covers the ordinary email attachments most people need to recover.</p>
+			<h3>Free winmail dat opener for Mac, Windows, and mobile</h3>
+			<p>If you are searching for a <strong>free winmail dat opener for Mac</strong>, this browser-based tool works without a Mac app or paid converter. It is also a <strong>winmail dat opener free</strong> of subscriptions, sign-ups, and software downloads on Windows and other modern devices. Because the interface runs in a web browser, you can use the same workflow on macOS, Windows, Linux, iPhone, iPad, and Android whenever your browser can access the saved attachment.</p>
+			<p>There is no account to create and no special email client required. You do not need to forward the message to another service or search for a compatible viewer. Save the .dat attachment, open this page, and let the local decoder recover the useful files. For best results, select the original attachment rather than a screenshot, renamed archive, or partial download.</p>
+			<h3>Private local processing for sensitive attachments</h3>
+			<p>Privacy matters because a winmail.dat file can contain business documents, invoices, contact details, or personal correspondence. This opener processes the selected file in your browser and does not upload the file contents to a server for conversion. The page still needs to load its code and assets like any website, but the attachment bytes stay on your device while the decoder works. You can read the <a href={localizedPath('en', 'privacy')}>privacy note</a> for more detail about local processing and temporary download links.</p>
+			<p>That local approach also makes the tool practical for quick, one-off jobs. You can use a <strong>winmail.dat viewer</strong> when a colleague sends an Outlook message to a different mail platform, when a customer portal gives you an unfamiliar .dat download, or when you need to inspect an attachment before deciding how to store it. The opener does not replace a full email client: it focuses on the useful files inside the container and gives you clear download controls instead of trying to recreate the original message.</p>
+			<p>It is worth keeping the file extension exactly as received. Searching for “winmail dat” may show the same format written without punctuation, but the attachment itself is normally named <strong>winmail.dat</strong> or ATT0001.dat. Do not rename it to .zip before opening it, because TNEF is not a standard ZIP archive. If your email service has stripped the attachment or changed its encoding, ask the sender to resend the original file or send the message in plain text or HTML format.</p>
+			<p>For recurring problems, the sender can usually prevent future winmail.dat files by changing Outlook’s message format or internet recipient settings. For a single message, however, a browser-based <strong>winmail dat opener</strong> is often the quickest solution. It gives you the actual attachment without requiring the sender to resend the email, and it keeps the recovery steps understandable for people who are not familiar with email transport formats.</p>
+			<p>If you cannot recover a file, download the original attachment again and retry. A file may be incomplete, may contain only message formatting, or may use a TNEF variation the decoder cannot parse. The <a href={localizedPath('en', 'faq')}>winmail.dat FAQ</a> explains common causes, while the <a href={localizedPath('en', 'how-it-works')}>how it works guide</a> explains what happens at each step.</p>
+		</div>
+	</section>}
 </main>
+
+{locale === 'en' && <script type="application/ld+json" set:html={JSON.stringify({
+	'@context': 'https://schema.org',
+	'@graph': [
+		{
+			'@type': 'WebApplication',
+			name: 'Winmail.dat Opener',
+			url: 'https://winmaildatopener.com/',
+			applicationCategory: 'UtilitiesApplication',
+			operatingSystem: 'Any',
+			isAccessibleForFree: true,
+			description: copy.siteDescription,
+		},
+		{
+			'@type': 'FAQPage',
+			mainEntity: faqSchema,
+		},
+	],
+})}></script>}
 
 <script>
 	import '../scripts/upload';
