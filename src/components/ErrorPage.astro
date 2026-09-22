@@ -1,0 +1,33 @@
+---
+import { localizedPath, type Locale } from '../i18n';
+
+interface Props {
+	locale: Locale;
+	status: '404' | '500';
+}
+
+const { locale, status } = Astro.props;
+const isNotFound = status === '404';
+const homePath = localizedPath(locale, 'home');
+---
+<main class="error-page container" aria-labelledby="error-title">
+	<div class="error-page-mark" aria-hidden="true">{status}</div>
+	<div class="error-page-copy">
+		<p class="eyebrow">{isNotFound ? 'Page not found' : 'Server error'}</p>
+		<h1 id="error-title">{isNotFound ? 'This page took a wrong turn.' : 'Something went wrong on our side.'}</h1>
+		<p class="hero-lede">
+			{isNotFound
+				? 'The page you are looking for does not exist or may have moved. Your files are still safe.'
+				: 'We could not complete that request. Please return home and try again in a moment.'}
+		</p>
+		<div class="error-page-actions">
+			<a class="button button-dark" href={homePath}>Back to the opener</a>
+			{!isNotFound && <button class="button button-light" type="button" id="retry-error">Try again</button>}
+		</div>
+	</div>
+</main>
+{!isNotFound && (
+	<script is:inline>
+		document.querySelector('#retry-error')?.addEventListener('click', () => window.location.reload());
+	</script>
+)}

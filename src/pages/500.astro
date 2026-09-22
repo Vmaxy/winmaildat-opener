@@ -1,0 +1,15 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ErrorPage from '../components/ErrorPage.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { getTranslations, localeFromPath, type Locale } from '../i18n';
+
+const locale = localeFromPath(Astro.url.pathname) as Locale;
+const copy = getTranslations(locale);
+---
+<Layout locale={locale} page="home" title="Something went wrong — Winmail.dat Opener" description="Something went wrong while loading this page.">
+	<Fragment slot="header"><SiteHeader locale={locale} page="home" navHow={copy.home.navHow} navFaq={copy.home.navFaq} openFile={copy.home.openFile} shared={copy.shared} /></Fragment>
+	<ErrorPage locale={locale} status="500" />
+	<Fragment slot="footer"><SiteFooter locale={locale} shared={copy.shared} /></Fragment>
+</Layout>
