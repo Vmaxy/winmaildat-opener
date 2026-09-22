@@ -1,6 +1,6 @@
 export const locales = ['en', 'de', 'es', 'ja'] as const;
 export type Locale = (typeof locales)[number];
-export type PageKey = 'home' | 'faq' | 'how-it-works' | 'privacy' | 'contact';
+export type PageKey = 'home' | 'faq' | 'how-it-works' | 'privacy' | 'about' | 'terms' | 'contact';
 
 export const localeLabels: Record<Locale, string> = {
 	en: 'English',
@@ -27,7 +27,7 @@ export const localeFromPath = (pathname: string): Locale => {
 export const pageFromPath = (pathname: string): PageKey => {
 	const segments = pathname.split('/').filter(Boolean);
 	const first = isLocale(segments[0]) ? segments[1] : segments[0];
-	return first === 'faq' || first === 'how-it-works' || first === 'privacy' || first === 'contact'
+	return first === 'faq' || first === 'how-it-works' || first === 'privacy' || first === 'about' || first === 'terms' || first === 'contact'
 		? first
 		: 'home';
 };
@@ -101,12 +101,16 @@ type Translation = {
 		faq: { eyebrow: string; title: string; lead: string; items: Array<{ question: string; answer: string }> };
 		how: { eyebrow: string; title: string; lead: string; steps: Array<{ title: string; body: string }>; calloutEyebrow: string; calloutTitle: string; calloutBody: string };
 		privacy: { eyebrow: string; title: string; lead: string; sections: Array<{ title: string; body: string }>; contactLink: string };
+		about: { eyebrow: string; title: string; lead: string; sections: Array<{ title: string; body: string }> };
+		terms: { eyebrow: string; title: string; lead: string; sections: Array<{ title: string; body: string }>; contactLink: string };
 		contact: { eyebrow: string; title: string; lead: string; calloutEyebrow: string; calloutBody: string; calloutNote: string };
 	};
 	shared: {
 		homeAria: string;
 		mainNav: string;
 		privacy: string;
+		about: string;
+		terms: string;
 		contact: string;
 		free: string;
 		localeMenu: string;
@@ -179,9 +183,22 @@ const en: Translation = {
 			{ title: 'Third-party services', body: 'The first release is designed without advertising pixels, analytics scripts, or third-party upload services. If that changes, this page should be updated before those services are enabled.' },
 			{ title: 'Questions', body: 'If you have a privacy or recovery question, use the contact page. Please do not email confidential files unless you have independently decided that sharing them is safe.' },
 		], contactLink: 'contact page' },
+		about: { eyebrow: 'About us', title: 'A small tool for an annoying email problem.', lead: 'Winmail.dat Opener exists to make one frustrating file format easier to understand and safer to handle.', sections: [
+			{ title: 'Why this exists', body: 'Some email clients package rich-text formatting and attachments inside a TNEF container named winmail.dat. When your mail app cannot read that container, a useful attachment can look like an unreadable .dat file.' },
+			{ title: 'What we built', body: 'This site is a focused browser utility: choose the file, decode it locally, and save the attachments you need. It is intentionally small, clear, and free to use.' },
+			{ title: 'Privacy by design', body: 'The decoder processes the selected file in your browser instead of requiring a file upload or account. That keeps the workflow quick and gives you a clearer boundary around your data.' },
+			{ title: 'Keep in touch', body: 'If the tool helped or you found a file it cannot open, we welcome practical feedback. The contact page explains what details are useful and how to reach us.' },
+		] },
+		terms: { eyebrow: 'Terms & conditions', title: 'Simple terms for a simple tool.', lead: 'These terms describe the basic rules for using Winmail.dat Opener.', sections: [
+			{ title: 'Use of the service', body: 'You may use this free tool to inspect winmail.dat and ATT0001.dat files that you are authorized to access. Do not use it to process files or information you have no right to handle.' },
+			{ title: 'No guarantee of recovery', body: 'The decoder is provided as-is. It may not recover every attachment, especially when a file is incomplete, malformed, encrypted, or uses an unsupported variation of TNEF.' },
+			{ title: 'Your responsibility', body: 'You are responsible for the files you select, the attachments you download, and how you use the recovered content. Keep backups of important files and scan downloads according to your normal security practices.' },
+			{ title: 'Availability and changes', body: 'We may improve, change, suspend, or discontinue parts of the service without notice. We may also update these terms when the service changes.' },
+			{ title: 'Questions', body: 'If you have a question about these terms or the service, use the contact page.' },
+		], contactLink: 'contact page' },
 		contact: { eyebrow: 'Contact', title: 'Tell us what got stuck.', lead: 'Feedback helps improve the decoder. Please describe the browser, file size, and error message you saw. Never attach a confidential file unless you are comfortable sharing it.', calloutEyebrow: 'Feedback by email', calloutBody: 'Include the steps that led to the problem and whether the file was named winmail.dat or ATT0001.dat. We cannot recover a file without seeing it, but we can help identify the next safe step.', calloutNote: 'Contact us by email' },
 	},
-	shared: { homeAria: 'Winmail.dat Opener home', mainNav: 'Main navigation', privacy: 'Privacy', contact: 'Contact', free: 'Free to use.', localeMenu: 'Language', selectLanguage: 'Select language', menuButton: 'Open navigation menu', mobileMenu: 'Mobile navigation' },
+	shared: { homeAria: 'Winmail.dat Opener home', mainNav: 'Main navigation', privacy: 'Privacy', about: 'About us', terms: 'Terms', contact: 'Contact', free: 'Free to use.', localeMenu: 'Language', selectLanguage: 'Select language', menuButton: 'Open navigation menu', mobileMenu: 'Mobile navigation' },
 };
 
 type TranslationOverrides = {

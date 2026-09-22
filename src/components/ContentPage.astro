@@ -40,6 +40,32 @@ const shared = copy.shared;
 		</div>
 	</main>
 )}
+{page === 'about' && (
+	<main class="content-section container legal-page">
+		<div class="section-heading"><p class="eyebrow">{copy.pages.about.eyebrow}</p><h1>{copy.pages.about.title}</h1><p class="hero-lede">{copy.pages.about.lead}</p></div>
+		<div class="legal-copy">
+			{copy.pages.about.sections.map((section) => (
+				<div class="legal-section">
+					<h2>{section.title}</h2>
+					<p>{section.body}</p>
+				</div>
+			))}
+		</div>
+	</main>
+)}
+{page === 'terms' && (
+	<main class="content-section container legal-page">
+		<div class="section-heading"><p class="eyebrow">{copy.pages.terms.eyebrow}</p><h1>{copy.pages.terms.title}</h1><p class="hero-lede">{copy.pages.terms.lead}</p></div>
+		<div class="legal-copy">
+			{copy.pages.terms.sections.map((section, index) => (
+				<div class="legal-section">
+					<h2>{section.title}</h2>
+					<p>{index === copy.pages.terms.sections.length - 1 ? <>{section.body} <a href={localizedPath(locale, 'contact')}>{copy.pages.terms.contactLink}</a>.</> : section.body}</p>
+				</div>
+			))}
+		</div>
+	</main>
+)}
 {page === 'contact' && (
 	<main class="content-section container">
 		<div class="section-heading"><p class="eyebrow">{copy.pages.contact.eyebrow}</p><h1>{copy.pages.contact.title}</h1><p class="hero-lede">{copy.pages.contact.lead}</p></div>

@@ -1,0 +1,14 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ContentPage from '../components/ContentPage.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { getTranslations } from '../i18n';
+
+const copy = getTranslations('en');
+---
+<Layout locale="en" page="terms" title="Terms & conditions — Winmail.dat Opener" description={copy.pages.terms.lead}>
+	<Fragment slot="header"><SiteHeader locale="en" page="terms" navHow={copy.home.navHow} navFaq={copy.home.navFaq} openFile={copy.home.openFile} shared={copy.shared} /></Fragment>
+	<ContentPage locale="en" page="terms" />
+	<Fragment slot="footer"><SiteFooter locale="en" shared={copy.shared} /></Fragment>
+</Layout>

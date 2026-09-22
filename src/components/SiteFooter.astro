@@ -3,7 +3,7 @@ import { localizedPath, type Locale, type PageKey } from '../i18n';
 
 interface Props {
 	locale: Locale;
-	shared: { homeAria: string; privacy: string; contact: string; free: string };
+	shared: { homeAria: string; privacy: string; about: string; terms: string; contact: string; free: string };
 }
 
 const { locale, shared } = Astro.props;
@@ -13,6 +13,6 @@ const { locale, shared } = Astro.props;
 		<a class="wordmark" href={localizedPath(locale, 'home')} aria-label={shared.homeAria}>
 			<span class="wordmark-mark" aria-hidden="true">↗</span><span>winmail.dat opener</span>
 		</a>
-		<p><a href={localizedPath(locale, 'privacy')}>{shared.privacy}</a> · <a href={localizedPath(locale, 'contact')}>{shared.contact}</a> · {shared.free}</p>
+		<p><a href={localizedPath(locale, 'about')}>{shared.about}</a> · <a href={localizedPath(locale, 'privacy')}>{shared.privacy}</a> · <a href={localizedPath(locale, 'terms')}>{shared.terms}</a> · <a href={localizedPath(locale, 'contact')}>{shared.contact}</a> · {shared.free}</p>
 	</div>
 </footer>
