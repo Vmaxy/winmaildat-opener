@@ -178,8 +178,8 @@ The exact structure may change as development continues.
 ### Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git
-cd YOUR_REPOSITORY
+git clone https://github.com/Vmaxy/winmaildat-opener.git
+cd winmaildat-opener
 ```
 
 ### Install dependencies
